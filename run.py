@@ -4,12 +4,19 @@ from allennlp.commands import main
 import sys
 
 device = -1
+dataname = "demo"
+
+exp_name = "base"
 force = "force"
-exp_name = "gloss_softmax"
+
 
 # 指定训练的 config，output_dir
-config_file = "experiments/gloss_softmax.jsonnet"
-overrides = json.dumps({"trainer": {"cuda_device": device}})
+train_data ='./data/trainset/{}/train.json'.format(dataname);
+dev_data = './data/trainset/{}/dev.json'.format(dataname);
+config_file = "experiments/base.jsonnet"
+overrides = json.dumps({"train_data_path": train_data,
+                        "validation_data_path": dev_data,
+                        "trainer": {"cuda_device": device}})
 serialization_dir = "records/" + exp_name
 
 # 是否覆盖 output_dir 文件夹：force 参数
@@ -28,4 +35,5 @@ sys.argv = [
      "--file-friendly-logging",
     "-s", serialization_dir
 ]
+
 main()

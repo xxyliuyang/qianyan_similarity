@@ -1,3 +1,4 @@
+import json
 
 
 def load_file(filename):
@@ -17,12 +18,17 @@ def load_file(filename):
     return data
 
 
-def load_dataset(dir):
+def load_dataset(dir, subsets = ["train", "dev", "test"]):
     file_dir = "data/original/" + dir + "/"
-    subsets = ["train", "dev", "test"]
 
     dataset = []
     for subset in subsets:
         filename = file_dir + subset + ".tsv"
         dataset.append(load_file(filename))
     return dataset
+
+
+def save_json(data, filename):
+    with open(filename, 'w') as fout:
+        for case in data:
+            fout.write(json.dumps(case, ensure_ascii=False) + "\n")
