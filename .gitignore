@@ -1,0 +1,30 @@
+# repo-specific stuff
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+.idea/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+=======
+records/
+resources/
+data/
