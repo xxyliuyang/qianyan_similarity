@@ -7,12 +7,12 @@
 
 ## 2. 执行流程
 
-```buildoutcfg
+```
 数据准备:
 PYTHONPATH=./ python data_process/prepare_train_data.py
 
 模型训练:
-PYTHONPATH=./ python run.py
+nohup sh run.sh&
 
 推理:
 
