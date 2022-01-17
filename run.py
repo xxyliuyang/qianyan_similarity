@@ -5,6 +5,9 @@ import sys
 
 device = -1
 dataname = "demo"
+if len(sys.argv) == 3:
+    device = int(sys.argv[1])
+    dataname = sys.argv[2]
 
 exp_name = "base"
 force = "force"
@@ -17,7 +20,7 @@ config_file = "experiments/base.jsonnet"
 overrides = json.dumps({"train_data_path": train_data,
                         "validation_data_path": dev_data,
                         "trainer": {"cuda_device": device}})
-serialization_dir = "records/" + exp_name
+serialization_dir = "records/{}/{}".format(dataname, exp_name)
 
 # 是否覆盖 output_dir 文件夹：force 参数
 assert force in ["force", "not_force"], "Please confirm whether to overwrite the output folder."

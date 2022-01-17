@@ -38,14 +38,14 @@ local dev_data = './data/trainset/bq_corpus/dev.json';
         },
     },
     "validation_data_loader": {
-        "batch_size": 8,
+        "batch_size": 32,
         "shuffle": false
     },
 
     "trainer": {
         "num_epochs": 6,
-        "num_gradient_accumulation_steps":8,
-        "use_amp": false,
+        "num_gradient_accumulation_steps":2,
+        "use_amp": true,
         "optimizer": {
             "type": "huggingface_adamw",
             "lr": 1e-5,
