@@ -69,10 +69,10 @@ class SimilarBert(Model):
             label_idx = prediction.argmax(dim=-1).item()
             label_str = self.vocab.get_index_to_token_vocabulary(self._label_namespace)\
                 .get(label_idx, str(label_idx))
-            classes.append(label_str)
+            classes.append(label_idx)
             label_probs.append(prediction[label_idx])
 
-        output_dict["labels"] = classes
+        output_dict["label"] = classes
         output_dict["label_probs"] = label_probs
         return output_dict
 

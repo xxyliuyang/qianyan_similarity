@@ -1,3 +1,4 @@
+source activate allennlp
 
 device=(1 2 3)
 dataname=("bq_corpus" "lcqmc" "paws-x-zh")

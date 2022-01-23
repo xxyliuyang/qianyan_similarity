@@ -32,3 +32,9 @@ def save_json(data, filename):
     with open(filename, 'w') as fout:
         for case in data:
             fout.write(json.dumps(case, ensure_ascii=False) + "\n")
+
+def load_json(filename):
+    data = []
+    for line in open(filename):
+        data.append(json.loads(line.strip()))
+    return data

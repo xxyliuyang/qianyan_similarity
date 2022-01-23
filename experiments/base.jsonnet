@@ -34,21 +34,20 @@ local dev_data = './data/trainset/bq_corpus/dev.json';
     "data_loader": {
         "batch_sampler": {
             "type": "bucket",
-            "batch_size": 8,
+            "batch_size": 64,
         },
     },
     "validation_data_loader": {
-        "batch_size": 32,
+        "batch_size": 64,
         "shuffle": false
     },
 
     "trainer": {
-        "num_epochs": 6,
-        "num_gradient_accumulation_steps":2,
+        "num_epochs": 20,
         "use_amp": true,
         "optimizer": {
             "type": "huggingface_adamw",
-            "lr": 1e-5,
+            "lr": 5e-5,
             "betas": [0.9, 0.999],
             "eps": 1e-8,
             "weight_decay":0.01,
