@@ -38,7 +38,8 @@ class Calculator(object):
         self.predictors = []
         for exp_name in exp_names:
             model_path = "records/{}/{}/model.tar.gz".format(data_name, exp_name)
-            self.predictors.append(Predictor.from_path(model_path, "similar", cuda_device=self.device))
+            if os.path.exists(model_path):
+                self.predictors.append(Predictor.from_path(model_path, "similar", cuda_device=self.device))
 
     def get_unsemble(self, batch):
         if len(self.predictors) == 1:
@@ -80,14 +81,14 @@ class Calculator(object):
         for d, p in zip(data, result):
             total += 1
             if d['label'] != str(p['label']):
-                wrong += 0
+                wrong += 1
                 out_info = []
                 out_info.append(d['text1'])
                 out_info.append(d['text2'])
                 out_info.append(d['label'])
                 out_info.append("pred={}. label_probs={}\n\n".format(p['label'], p['label_probs']))
                 fout.write("\n".join(out_info))
-        print("acc: ", round((total-wrong)/total))
+        print("wrong={}, total={}. acc:{} ".format(wrong, total, round((total-wrong)/total, 4)))
 
     def test(self, data, result, output_file):
         fout = open(output_file, 'w')
@@ -123,10 +124,3 @@ if __name__ == '__main__':
         filename = "data/trainset/{}/{}.json".format(data_name, subset)
         output_file = "records/result/{}_{}.txt".format(data_name, subset)
         calculator.get_output(filename, output_file, subset=="test")
-
-
-
-
-
-
-
