@@ -47,9 +47,9 @@ class SimilarBert(Model):
         logits = self._output_layer(pooled_embedding)
 
         result = {"logits": logits}
+        result["probs"] = torch.nn.functional.softmax(logits, dim=-1)
         if label is not None:
             result["loss"] = self._loss(logits, label)
-            result["probs"] = torch.nn.functional.softmax(logits, dim=-1)
             self._accuracy(logits, label)
             self.make_output_human_readable(result)
 
