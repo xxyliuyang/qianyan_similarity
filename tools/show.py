@@ -31,3 +31,4 @@ def show_datset_result(name):
 if __name__ == "__main__":
     for name in ["bq_corpus", "lcqmc", "paws-x-zh"]:
         show_datset_result(name)
+        print("==="*30)
