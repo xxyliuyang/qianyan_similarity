@@ -5,6 +5,7 @@ from allennlp.data import Instance
 from overrides import overrides
 from tqdm import trange
 import math
+import os
 
 from tools.file_util import load_json
 
@@ -89,7 +90,10 @@ if __name__ == '__main__':
     # data_names = ["bq_corpus", "lcqmc", "paws-x-zh"]
     data_names = ["demo"]
     subset = "dev"
-    device = -1
+    device = 0
+
+    if not os.path.exists("records/resul"):
+        os.mkdir("records/resul/")
 
     for data_name in data_names:
         calculator = Calculator(data_name, exp_names, device=device)
