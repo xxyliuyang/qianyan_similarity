@@ -15,5 +15,6 @@ PYTHONPATH=./ python data_process/prepare_train_data.py
 nohup sh run.sh&
 
 推理:
+PYTHONPATH=./ python extends/predictor.py
 
 ```

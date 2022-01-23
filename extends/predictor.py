@@ -6,6 +6,7 @@ from overrides import overrides
 from tqdm import trange
 import math
 import os
+import torch
 
 from tools.file_util import load_json
 
@@ -42,6 +43,23 @@ class Calculator(object):
     def get_unsemble(self, batch):
         if len(self.predictors) == 1:
             return self.predictors[0].predict(batch)
+        else:
+            unsembel_results = []
+            preditions = [predictor.predict(batch) for predictor in self.predictors]
+            for index in range(len(preditions[0])):
+                all_result = [prediction[index] for prediction in preditions]
+                all_probs = [result['probs'] for result in all_result]
+                all_probs = torch.tensor(all_probs)
+                avg_probs = torch.sum(all_probs, dim=0) / all_probs.shape[0]
+
+                probs, label = avg_probs.max(dim=-1)
+                unsembel_result = {
+                    "probs": avg_probs.tolist(),
+                    "label": label.item(),
+                    "label_probs": probs.item()
+                }
+                unsembel_results.append(unsembel_result)
+            return unsembel_results
 
     def get_predictions(self, test_data):
         # 获取预测结果
@@ -58,14 +76,18 @@ class Calculator(object):
 
     def eval(self, data, result, output_file):
         fout = open(output_file, 'w')
+        wrong, total = 0,0
         for d, p in zip(data, result):
+            total += 1
             if d['label'] != str(p['label']):
+                wrong += 0
                 out_info = []
                 out_info.append(d['text1'])
                 out_info.append(d['text2'])
                 out_info.append(d['label'])
-                out_info.append("pred={}. probs={}\n\n".format(p['label'], p['label_probs']))
+                out_info.append("pred={}. label_probs={}\n\n".format(p['label'], p['label_probs']))
                 fout.write("\n".join(out_info))
+        print("acc: ", round((total-wrong)/total))
 
     def test(self, data, result, output_file):
         fout = open(output_file, 'w')
@@ -86,14 +108,15 @@ class Calculator(object):
 
 
 if __name__ == '__main__':
-    exp_names = ["base"]
-    # data_names = ["bq_corpus", "lcqmc", "paws-x-zh"]
-    data_names = ["demo"]
+    exp_names = ["base", "base_e20", "base_e20_b64"]
+    data_names = ["bq_corpus", "lcqmc", "paws-x-zh"]
+    # exp_names = ["base"]
+    # data_names = ["demo"]
     subset = "dev"
-    device = 0
+    device = 1
 
-    if not os.path.exists("records/resul"):
-        os.mkdir("records/resul/")
+    if not os.path.exists("records/result"):
+        os.mkdir("records/result/")
 
     for data_name in data_names:
         calculator = Calculator(data_name, exp_names, device=device)
