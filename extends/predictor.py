@@ -10,8 +10,6 @@ import torch
 
 from tools.file_util import load_json
 
-from extends.model import SimilarBert
-from extends.reader import SimilarReader
 
 @Predictor.register("similar")
 class SimilarPredictor(Predictor):

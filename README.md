@@ -18,3 +18,13 @@ nohup sh run.sh&
 PYTHONPATH=./ python extends/predictor.py
 
 ```
+
+## 3. 对比学习
+
+```
+数据准备:
+PYTHONPATH=./ python data_process/prepare_simcse_data.py
+
+模型训练:
+nohup python run_simcse.py 0&
+```
