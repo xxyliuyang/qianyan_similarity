@@ -11,7 +11,7 @@ def _get_combine(data):
 
         if text1 not in resuts:
             resuts[text1] = {}
-        resuts[text1][label].append(text2)
+        resuts[text1][label] = text2
     return resuts
 
 def _get_simcse_example(data_combine):

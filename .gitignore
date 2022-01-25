@@ -28,3 +28,4 @@ __pycache__/
 records/
 resources/
 data/
+nohup.out
