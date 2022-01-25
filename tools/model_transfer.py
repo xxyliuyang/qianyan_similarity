@@ -11,7 +11,7 @@ def change_paras_name(paras_ori):
     result = OrderedDict()
     count = 0
     for key, value in paras_ori.items():
-        new_key = key.replace("model.", "")
+        new_key = key.replace("_text_field_embedder.token_embedder_tokens.transformer_model", "bert")
         if new_key == "crit_mask_lm_smoothed.one_hot":
             continue
         result[new_key] = value
@@ -20,7 +20,7 @@ def change_paras_name(paras_ori):
     return result
 
 if __name__ == '__main__':
-    th_model = "records//model_state_epoch_4.th"
+    th_model = "records/model_state_epoch_4.th"
     th_paras = load_paras(th_model)
     paras_change_name = change_paras_name(th_paras)
-    torch.save(paras_change_name, "resources//pytorch_model.bin")
+    torch.save(paras_change_name, "resources/pytorch_model.bin")
