@@ -10,18 +10,8 @@ def _get_combine(data):
         label = case['label']
 
         if text1 not in resuts:
-            resuts[text1] = {
-                "0":[],
-                "1":[]
-            }
-        if text2 not in resuts:
-            resuts[text2] = {
-                "0": [],
-                "1": []
-            }
-
+            resuts[text1] = {}
         resuts[text1][label].append(text2)
-        resuts[text2][label].append(text1)
     return resuts
 
 def _get_simcse_example(data_combine):
@@ -29,20 +19,23 @@ def _get_simcse_example(data_combine):
     example_set = set([])
 
     for text1, infos in data_combine.items():
-        for text2 in infos['1']:
-            for text3 in infos['0']:
-                temp1 = text1 + text2 + text3
-                temp2 = text2 + text1 + text3
+        if "0" not in infos or "1" not in infos:
+            continue
 
-                if temp1 in example_set or temp2 in example_set:
-                    continue
-                example_set.add(temp1)
-                case = {
-                    "text1": text1,
-                    "text2": text2,
-                    "text3": text3
-                }
-                results.append(case)
+        text2 = infos["1"]
+        text3 = infos["0"]
+        temp1 = text1 + text2 + text3
+        temp2 = text2 + text1 + text3
+
+        if temp1 in example_set or temp2 in example_set:
+            continue
+        example_set.add(temp1)
+        case = {
+            "text1": text1,
+            "text2": text2,
+            "text3": text3
+        }
+        results.append(case)
     return results
 
 
