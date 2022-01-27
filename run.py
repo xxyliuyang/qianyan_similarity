@@ -9,7 +9,7 @@ exp_name = "albert_base"
 if len(sys.argv) == 4:
     device = int(sys.argv[1])
     dataname = sys.argv[2]
-    exp_name = "base"
+    exp_name = sys.argv[3]
 
 force = "force"
 

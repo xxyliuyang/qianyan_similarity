@@ -45,6 +45,7 @@ local dev_data = './data/trainset/bq_corpus/dev.json';
     "trainer": {
         "num_epochs": 20,
         "use_amp": true,
+        "run_sanity_checks": false,
         "optimizer": {
             "type": "huggingface_adamw",
             "lr": 5e-5,
