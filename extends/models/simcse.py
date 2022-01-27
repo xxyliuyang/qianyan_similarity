@@ -44,7 +44,7 @@ class SimilarBert(Model):
         y_label = torch.cat((label+e1.shape[0], label))
 
         # 3.选择label对应的行
-        select_row = label = torch.arange(e1.shape[0]*2, device=embedding.device)
+        select_row = torch.arange(e1.shape[0]*2, device=embedding.device)
         sim = torch.index_select(sim, dim=0, index=select_row)
         sim = sim / 0.05
 

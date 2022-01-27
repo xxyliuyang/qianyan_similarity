@@ -1,4 +1,4 @@
-local model_name = "./resources/robert_pytorch";
+local model_name = "./resources/albert_base";
 local train_data ='./data/trainset/bq_corpus/train.json';
 local dev_data = './data/trainset/bq_corpus/dev.json';
 

@@ -27,7 +27,7 @@ class SimilarBert(Model):
 
         # 输出
         self._pooler = BertPooler(model_path, dropout=0.1)
-        self._output_layer = torch.nn.Linear(self._text_field_embedder.get_output_dim(), 2)
+        self._output_layer = torch.nn.Linear(self._text_field_embedder.get_output_dim()*2, 2)
         self._output_layer.weight.data.normal_(mean=0.0, std=0.02)
         self._output_layer.bias.data.zero_()
 
@@ -37,13 +37,20 @@ class SimilarBert(Model):
 
         self._label_namespace = label_namespace
 
+    def polled(self, embedding):
+        cls = torch.index_select(embedding, dim=1,
+                                 index=torch.tensor([0], device=embedding.device))
+        cls = cls.squeeze()
+        avg = torch.mean(embedding, dim=1)
+        return torch.cat([cls, avg], dim=1)
+
     def forward(self,
                 tokens: TextFieldTensors,
                 label: Optional[torch.IntTensor] = None
                 ) -> Dict[str, torch.Tensor]:
 
         embedding = self._text_field_embedder(tokens)
-        pooled_embedding = self._pooler(embedding)
+        pooled_embedding = self.polled(embedding)
         logits = self._output_layer(pooled_embedding)
 
         result = {"logits": logits}

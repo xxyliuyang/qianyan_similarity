@@ -5,18 +5,19 @@ import sys
 
 device = -1
 dataname = "demo"
-if len(sys.argv) == 3:
+exp_name = "albert_base"
+if len(sys.argv) == 4:
     device = int(sys.argv[1])
     dataname = sys.argv[2]
+    exp_name = "base"
 
-exp_name = "base"
 force = "force"
 
 
 # 指定训练的 config，output_dir
 train_data ='./data/trainset/{}/train.json'.format(dataname);
 dev_data = './data/trainset/{}/dev.json'.format(dataname);
-config_file = "experiments/base.jsonnet"
+config_file = "experiments/{}.jsonnet".format(exp_name)
 overrides = json.dumps({"train_data_path": train_data,
                         "validation_data_path": dev_data,
                         "trainer": {"cuda_device": device}})
