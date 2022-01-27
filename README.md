@@ -11,6 +11,9 @@
 数据准备:
 PYTHONPATH=./ python data_process/prepare_train_data.py
 
+数据增强: 可以跳过
+PYTHONPATH=./ python data_process/data_augmentation.py
+
 模型训练:
 nohup sh run.sh&
 
