@@ -7,6 +7,7 @@ from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
 from allennlp.modules.token_embedders import PretrainedTransformerEmbedder
 from allennlp.training.metrics import CategoricalAccuracy
 from overrides import overrides
+import torch.nn.functional as F
 
 
 @Model.register("similar")
@@ -17,6 +18,7 @@ class SimilarBert(Model):
         vocab: Vocabulary,
         label_namespace: str = "label",
         model_path: str = "bert",
+        r_drop_alpha: float = 0.0,
         **kwargs
     ) -> None:
         super().__init__(vocab, **kwargs)
@@ -37,6 +39,9 @@ class SimilarBert(Model):
 
         self._label_namespace = label_namespace
 
+        # other
+        self.r_drop_alpha = r_drop_alpha
+
     def polled(self, embedding):
         cls = torch.index_select(embedding, dim=1,
                                  index=torch.tensor([0], device=embedding.device))
@@ -44,19 +49,46 @@ class SimilarBert(Model):
         avg = torch.mean(embedding, dim=1)
         return torch.cat([cls, avg], dim=1)
 
+    def compute_kl_loss(self, p, q, pad_mask=None):
+        p_loss = F.kl_div(F.log_softmax(p, dim=-1), F.softmax(q, dim=-1), reduction='none')
+        q_loss = F.kl_div(F.log_softmax(q, dim=-1), F.softmax(p, dim=-1), reduction='none')
+        # pad_mask is for seq-level tasks
+        if pad_mask is not None:
+            p_loss.masked_fill_(pad_mask.eq(1), 0.)
+            q_loss.masked_fill_(pad_mask.eq(1), 0.)
+        # You can choose whether to use function "sum" and "mean" depending on your task
+        p_loss = p_loss.sum()
+        q_loss = q_loss.sum()
+        loss = p_loss + q_loss
+        return loss
+
+    def get_logits(self,
+                     tokens: TextFieldTensors,
+                     ) -> torch.Tensor:
+        embedding = self._text_field_embedder(tokens)
+        pooled_embedding = self.polled(embedding)
+        logits = self._output_layer(pooled_embedding)
+        return logits
+
     def forward(self,
                 tokens: TextFieldTensors,
                 label: Optional[torch.IntTensor] = None
                 ) -> Dict[str, torch.Tensor]:
 
-        embedding = self._text_field_embedder(tokens)
-        pooled_embedding = self.polled(embedding)
-        logits = self._output_layer(pooled_embedding)
+        logits = self.get_logits(tokens)
 
         result = {"logits": logits}
         result["probs"] = torch.nn.functional.softmax(logits, dim=-1)
         if label is not None:
-            result["loss"] = self._loss(logits, label)
+            ce_loss1 = self._loss(logits, label)
+            if self.r_drop_alpha > 0 and self.training:
+                logits2 = self.get_logits(tokens)
+                ce_loss2 = self._loss(logits2, label)
+                kl_loss = self.compute_kl_loss(logits, logits2)
+                result["loss"] = 0.5 * (ce_loss1 + ce_loss2) + 0.25 * self.r_drop_alpha * kl_loss
+            else:
+                result["loss"] = ce_loss1
+
             self._accuracy(logits, label)
             self.make_output_human_readable(result)
 
