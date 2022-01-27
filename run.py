@@ -5,7 +5,7 @@ import sys
 
 device = -1
 dataname = "demo"
-exp_name = "albert_base"
+exp_name = "macbert_base"
 if len(sys.argv) == 4:
     device = int(sys.argv[1])
     dataname = sys.argv[2]
