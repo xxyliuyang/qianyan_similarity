@@ -30,12 +30,12 @@ local dev_data = './data/trainset/bq_corpus/dev.json';
     "model": {
         "type": "similar",
         "model_path": model_name,
+        "r_drop_alpha": 0.5
     },
     "data_loader": {
         "batch_sampler": {
             "type": "bucket",
             "batch_size": 64,
-            "r_drop_alpha": 0.5
         },
     },
     "validation_data_loader": {
