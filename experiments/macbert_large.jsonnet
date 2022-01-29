@@ -30,26 +30,26 @@ local dev_data = './data/trainset/bq_corpus/dev.json';
     "model": {
         "type": "similar",
         "model_path": model_name,
-        "r_drop_alpha": 0.5
+        "r_drop_alpha": 0.2
     },
     "data_loader": {
         "batch_sampler": {
             "type": "bucket",
-            "batch_size": 32,
+            "batch_size": 16,
         },
     },
     "validation_data_loader": {
-        "batch_size": 32,
+        "batch_size": 16,
         "shuffle": false
     },
 
     "trainer": {
-        "num_epochs": 20,
+        "num_epochs": 10,
         "use_amp": true,
-        "num_gradient_accumulation_steps":2,
+        "num_gradient_accumulation_steps":4,
         "optimizer": {
             "type": "huggingface_adamw",
-            "lr": 5e-5,
+            "lr": 1e-5,
             "betas": [0.9, 0.999],
             "eps": 1e-8,
             "weight_decay":0.01,
