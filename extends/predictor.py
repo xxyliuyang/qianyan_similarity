@@ -7,6 +7,8 @@ from tqdm import trange
 import math
 import os
 import torch
+from extends.models.model import SimilarBert
+from extends.readers.reader import SimilarReader
 
 from tools.file_util import load_json
 

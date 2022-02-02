@@ -45,6 +45,7 @@ def merge_result(all_data):
             pair = case['text1'] + case['text2']
             if pair in pairset and case['label'] == "1":
                 continue
+            pairset.add(pair)
             result.append(case)
     return result
 
